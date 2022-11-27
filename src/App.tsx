@@ -1,10 +1,13 @@
 import React from 'react';
-import SignIn from './pages/SignIn';
+import UserContextWrapper from "./contexts/UserContext";
+import Router from './routers/Router';
 
 function App() {
   return (
     <div className="App">
-      <SignIn />
+      <UserContextWrapper>
+        <Router />
+      </UserContextWrapper>
     </div>
   );
 }
