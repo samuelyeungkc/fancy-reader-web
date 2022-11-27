@@ -1,73 +1,93 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container/Container';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
-import Paper from '@mui/material/Paper';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { pink } from '@mui/material/colors';
-import { WIDTH } from '../constants/Screens';
+import { POCKET } from '../constants/Path';
+import SignInBox from '../components/SignInBox';
+
+type PocketAuthStartResponse = {
+  uri: string;
+  requestToken: string;
+};
 
 const SignIn = () => {
 
-  const showBorder = useMediaQuery(`(min-width:${WIDTH.sm}px)`);
+  const [loadingRequestToken, setLoadingRequestToken] = useState(false);
+
+  const fetchRequestToken = () => {
+    fetch('https://apps.samykc.com/pocket/auth/start')
+      .then(res => {
+        if (!res.ok) {
+          throw res.text();
+        }
+        return res.json();
+      })
+      .then((res: PocketAuthStartResponse) => {
+        const { requestToken } = res;
+        const origin = window.location.origin;
+        const url = `${POCKET.START_AUTH}?request_token=${requestToken}&redirect_uri=${origin}`;
+        console.log(res, url);
+        // window.location.href = res.uri;
+      })
+      .catch(err => {
+        alert(JSON.stringify(err));
+        console.error(err);
+      });
+  };
+
+  const getButtonText = () => {
+    return loadingRequestToken ? 'Loading' : 'Authorize';
+  };
+
+  useEffect(() => {
+    if (loadingRequestToken) {
+      fetchRequestToken();
+    }
+  }, [loadingRequestToken]);
 
   return (
-    <Container
-      component={'main'}
-      maxWidth={'xs'}
-      sx={{
-        height: '100vh',
-        p: 2,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <Paper
-        elevation={showBorder ? 1 : 0}
-        sx={{ my: 'auto', width: '100%' }}
-        component={'section'}
+    <SignInBox>
+      <Container
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 3,
+          flexDirection: 'column'
+        }}
       >
-        <Box
+        <Avatar
+          alt=""
           sx={{
-            px: 3,
-            py: 6,
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 4,
-            display: 'flex'
+            width: 56,
+            height: 56,
+            bgcolor: pink[500],
           }}
         >
-          <Avatar
-            alt=""
-            sx={{
-              width: 56,
-              height: 56,
-              bgcolor: pink[500],
-            }}
-          >
-            <LoginIcon />
-          </Avatar>
-          <Typography variant={'h5'} component={'h1'} gutterBottom>
-            Authorize on Pocket
-          </Typography>
-          <Box
-            sx={{ minWidth: '100%' }}
-            component={'form'}
-          >
-            <Button
-              fullWidth
-              variant="contained"
-            >
-              Authorize
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Container>
+          <LoginIcon/>
+        </Avatar>
+        <Typography variant={'h5'} component={'h1'} gutterBottom>
+          Authorize on Pocket
+        </Typography>
+      </Container>
+
+      <Box
+        sx={{ minWidth: '100%' }}
+        component={'form'}
+      >
+        <Button
+          disabled={loadingRequestToken}
+          fullWidth
+          variant="contained"
+          onClick={() => setLoadingRequestToken(true)}
+        >
+          {getButtonText()}
+        </Button>
+      </Box>
+    </SignInBox>
   );
 };
 
