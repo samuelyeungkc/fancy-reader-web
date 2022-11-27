@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PATH } from '../constants/Path';
 import SignIn from '../pages/SignIn';
 import Root from '../Root';
+import OAuth from '../pages/Oauth';
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
       {
         path: PATH.SIGNIN,
         element: <SignIn/>,
+      },
+      {
+        path: PATH.OAUTH,
+        element: <OAuth />,
       },
     ],
   },

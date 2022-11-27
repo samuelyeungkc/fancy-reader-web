@@ -9,7 +9,7 @@ const Root = () => {
 
   useEffect(() => {
     console.log('checking signin status')
-    if (!isSignedIn) {
+    if (!isSignedIn && window.location.pathname !== `/${PATH.OAUTH}`) {
       navigate(`/${PATH.SIGNIN}`);
     }
   }, [isSignedIn, navigate]);
