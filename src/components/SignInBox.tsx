@@ -5,7 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { WIDTH } from '../constants/Screens';
 
 type Props = {
-  children: JSX.Element[];
+  children: JSX.Element[] | JSX.Element | string;
 }
 
 const SignInBox = ({ children }: Props) => {
