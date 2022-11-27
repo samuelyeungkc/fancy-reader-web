@@ -6,9 +6,14 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
 import Paper from '@mui/material/Paper';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { pink } from '@mui/material/colors';
+import { WIDTH } from '../constants/Screens';
 
 const SignIn = () => {
+
+  const showBorder = useMediaQuery(`(min-width:${WIDTH.sm}px)`);
+
   return (
     <Container
       component={'main'}
@@ -22,7 +27,7 @@ const SignIn = () => {
       }}
     >
       <Paper
-        elevation={window.innerWidth < 600 ? 0 : 1}
+        elevation={showBorder ? 1 : 0}
         sx={{ my: 'auto', width: '100%' }}
         component={'section'}
       >
@@ -50,12 +55,12 @@ const SignIn = () => {
             Authorize on Pocket
           </Typography>
           <Box
+            sx={{ minWidth: '100%' }}
             component={'form'}
           >
             <Button
               fullWidth
               variant="contained"
-              sx={{ minWidth: '100%' }}
             >
               Authorize
             </Button>
