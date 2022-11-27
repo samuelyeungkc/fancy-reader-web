@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
 import { pink } from '@mui/material/colors';
-import { POCKET } from '../constants/Path';
+import { PARAM_NAMES, PATH, POCKET } from '../constants/Path';
 import SignInBox from '../components/SignInBox';
 
 type PocketAuthStartResponse = {
@@ -28,10 +28,11 @@ const SignIn = () => {
       })
       .then((res: PocketAuthStartResponse) => {
         const { requestToken } = res;
-        const origin = window.location.origin;
-        const url = `${POCKET.START_AUTH}?request_token=${requestToken}&redirect_uri=${origin}`;
-        console.log(res, url);
-        // window.location.href = res.uri;
+        const redirectUri = encodeURIComponent(
+          `${window.location.origin}${PATH.OAUTH}?${PARAM_NAMES.requestToken}=${requestToken}`
+        );
+        const uri = `${POCKET.START_AUTH}?request_token=${requestToken}&redirect_uri=${redirectUri}`;
+        window.location.href = uri;
       })
       .catch(err => {
         alert(JSON.stringify(err));
