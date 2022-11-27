@@ -29,7 +29,7 @@ const SignInBox = ({ children }: Props) => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          height: isMobile ? '60%' : '600px',
+          height: isMobile ? '60%' : '400px',
           justifyContent: 'space-between',
           alignItems: 'center',
           my: 'auto',
