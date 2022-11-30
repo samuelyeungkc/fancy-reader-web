@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from "react-router-dom";
-import { PATH } from "./constants/Path";
+import { LANDING_PAGES_PATH, PATH } from './constants/Path';
 import { useUser } from './contexts/UserContext';
+
+const getRedirectPath = (isSignedIn: boolean, currentPath: string) => {
+  switch (true) {
+    case !isSignedIn && currentPath !== `/${PATH.OAUTH}`:
+      return `/${PATH.SIGNIN}`;
+    case isSignedIn && LANDING_PAGES_PATH.includes(currentPath):
+      return `/${PATH.ARTICLES}`;
+  }
+  return null;
+};
 
 const Root = () => {
   const { isSignedIn } = useUser();
@@ -9,8 +19,9 @@ const Root = () => {
 
   useEffect(() => {
     console.log('checking signin status')
-    if (!isSignedIn && window.location.pathname !== `/${PATH.OAUTH}`) {
-      navigate(`/${PATH.SIGNIN}`);
+    const redirect = getRedirectPath(isSignedIn, window.location.pathname);
+    if (redirect) {
+      navigate(redirect);
     }
   }, [isSignedIn, navigate]);
 

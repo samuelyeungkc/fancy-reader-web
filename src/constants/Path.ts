@@ -1,7 +1,14 @@
 export const PATH = {
   SIGNIN: 'signin',
-  OAUTH: 'oauth'
+  OAUTH: 'oauth',
+  ARTICLES: 'articles'
 };
+
+export const LANDING_PAGES_PATH = [
+  '/',
+  `/${PATH.SIGNIN}`,
+  `/${PATH.OAUTH}`
+];
 
 const BASE_DOMAIN = 'https://getpocket.com';
 const START_AUTH = '/auth/authorize';

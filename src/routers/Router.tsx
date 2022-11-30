@@ -4,6 +4,7 @@ import { PATH } from '../constants/Path';
 import SignIn from '../pages/SignIn';
 import Root from '../Root';
 import OAuth from '../pages/Oauth';
+import Articles from '../pages/Articles';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
         path: PATH.OAUTH,
         element: <OAuth />,
       },
+      {
+        path: PATH.ARTICLES,
+        element: <Articles />,
+      }
     ],
   },
 ]);
