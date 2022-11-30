@@ -1,6 +1,7 @@
 import React from 'react';
-import { getCookie } from "../utils/CookieUtils";
+import { getCookie, setCookie } from '../utils/CookieUtils';
 import { COOKIE_NAMES } from "../constants/Cookies";
+import { DAYS_IN_YEAR } from '../constants/Times';
 
 const UserContext = React.createContext({
   accessToken: '',
@@ -23,7 +24,7 @@ const UserContextWrapper = ({ children }: Props) => {
   const [accessToken, setAccessToken] = React.useState(getCookie(COOKIE_NAMES.ACCESS_TOKEN));
 
   const updateContextAccessToken = (token: string) => {
-    document.cookie = `${COOKIE_NAMES.ACCESS_TOKEN}=${token}`
+    setCookie(COOKIE_NAMES.ACCESS_TOKEN, token, DAYS_IN_YEAR);
     setAccessToken(token);
   };
 
