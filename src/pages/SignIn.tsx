@@ -29,7 +29,7 @@ const SignIn = () => {
       .then((res: PocketAuthStartResponse) => {
         const { requestToken } = res;
         const redirectUri = encodeURIComponent(
-          `${window.location.origin}${PATH.OAUTH}?${PARAM_NAMES.requestToken}=${requestToken}`
+          `${window.location.origin}/${PATH.OAUTH}?${PARAM_NAMES.requestToken}=${requestToken}`
         );
         const uri = `${POCKET.START_AUTH}?request_token=${requestToken}&redirect_uri=${redirectUri}`;
         window.location.href = uri;
