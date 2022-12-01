@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { PARAM_NAMES } from '../constants/Path';
 import SignInBox from '../components/SignInBox';
-import { CircularProgress } from '@mui/material';
+import CircularProgress  from '@mui/material/CircularProgress';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 
