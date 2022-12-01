@@ -9,6 +9,8 @@ const getRedirectPath = (isSignedIn: boolean, currentPath: string) => {
       return `/${PATH.SIGNIN}`;
     case isSignedIn && LANDING_PAGES_PATH.includes(currentPath):
       return `/${PATH.ARTICLES}`;
+    case isSignedIn && currentPath === `/${PATH.MAIN}`:
+      return `/${PATH.ARTICLES}`;
   }
   return null;
 };

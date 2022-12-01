@@ -5,6 +5,7 @@ import SignIn from '../pages/SignIn';
 import Root from '../Root';
 import OAuth from '../pages/Oauth';
 import Articles from '../pages/Articles';
+import Main from '../pages/Main';
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,14 @@ const router = createBrowserRouter([
         element: <OAuth />,
       },
       {
-        path: PATH.ARTICLES,
-        element: <Articles />,
+        path: PATH.MAIN,
+        element: <Main />,
+        children: [
+          {
+            path: `/${PATH.ARTICLES}`,
+            element: <Articles />,
+          }
+        ]
       }
     ],
   },
