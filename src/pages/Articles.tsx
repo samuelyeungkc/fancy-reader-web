@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 type Article = {
   item_id: number;
@@ -40,50 +41,60 @@ type FetchArticleResponse = {
   since: number
 };
 
-const fetchArticles = (
-  {
-    accessToken,
-    signal,
-    setArticles
-  }: {
-    accessToken: string;
-    signal: AbortSignal;
-    setArticles: (articles: Article[]) => void
-  }
-) => {
-  const body = {
-    state: 'unread',
-    count: 5,
-    since: 0,
-    sort: 'newest',
-    detailType: 'complete',
-  };
-  const config: RequestInit = {
-    signal: signal,
-    method: 'POST',
-    body: JSON.stringify(body)
-  };
-  fetch(`https://apps.samykc.com/pocket/articles/fetch?access_token=${accessToken}`, config)
-    .then(res => res.json())
-    .then((res: FetchArticleResponse) => {
-      setArticles(Object.values(res.list).sort((a, b) => a.sort_id - b.sort_id));
-      console.log(res.list);
-    })
-    .catch(res => console.error('fetch Article aborted', res));
-};
-
 const Articles = () => {
+
   const {accessToken} = useUser();
   const [articles, setArticles] = useState<Article[]>([]);
-  console.log('haha articles!', accessToken);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const loadMore = () => {
+    const abort = new AbortController();
+    setLoading(true);
+    const body = {
+      state: 'unread',
+      count: 3,
+      since: 0,
+      offset: articles.length,
+      sort: 'newest',
+      detailType: 'complete',
+    };
+    const config: RequestInit = {
+      signal: abort.signal,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    };
+    fetch(`https://apps.samykc.com/pocket/articles/fetch?access_token=${accessToken}`, config)
+      .then(res => res.json())
+      .then((res: FetchArticleResponse) => ((res) => {
+        const newArticles = Object.values(res.list).sort((a, b) => a.sort_id - b.sort_id);
+        console.log(res.list);
+        setArticles((articles) => [...articles, ...newArticles]);
+        setHasNextPage(Object.keys(res.list).length > 0);
+      })(res))
+      .finally(() => setLoading(false));
+    return abort;
+  };
+  const error = false;
+
+  const [sentryRef] = useInfiniteScroll({
+    loading,
+    hasNextPage,
+    onLoadMore: loadMore,
+    // When there is an error, we stop infinite loading.
+    // It can be reactivated by setting "error" state as undefined.
+    disabled: error,
+    // `rootMargin` is passed to `IntersectionObserver`.
+    // We can use it to trigger 'onLoadMore' when the sentry comes near to become
+    // visible, instead of becoming fully visible on the screen.
+    // rootMargin: '0px 0px 400px 0px',
+  });
 
   useEffect(() => {
-    const abort = new AbortController();
-    fetchArticles({accessToken, signal: abort.signal, setArticles})
-    return () => {
-      abort.abort();
-    };
-  }, []);
+    const abort = loadMore();
+    return () => abort.abort();
+  }, [accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <List>
@@ -91,9 +102,9 @@ const Articles = () => {
         return (
           <ListItem key={article.item_id}>
             <div style={{display: 'block'}}>
-              <div>
+              <h4>
                 {article.resolved_title}
-              </div>
+              </h4>
               <div>item id {article.item_id}</div>
               <div>name {article.domain_metadata?.name}</div>
               <div>sort id {article.sort_id}</div>
@@ -105,7 +116,12 @@ const Articles = () => {
           </ListItem>
         )
       })}
-      {[...new Array(120)].map((i, index) => <div key={Math.random()}>Articles here</div>)}
+
+      {(loading || hasNextPage) && (
+        <ListItem ref={sentryRef}>
+          <div>Loading</div>
+        </ListItem>
+      )}
     </List>
   );
 };
