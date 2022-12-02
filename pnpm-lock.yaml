@@ -18,6 +18,7 @@ specifiers:
   '@types/react-dom': ^18.0.8
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-infinite-scroll-hook: ^4.0.4
   react-router-dom: ^6.4.3
   react-scripts: 5.0.1
   typescript: ^4.8.4
@@ -41,6 +42,7 @@ dependencies:
   '@types/react-dom': 18.0.8
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-infinite-scroll-hook: 4.0.4_react@18.2.0
   react-router-dom: 6.4.3_react-dom@18.2.0+react@18.2.0
   react-scripts: 5.0.1_b946aee13660c6d97b5e465dd9f94daf
   typescript: 4.8.4
@@ -8645,6 +8647,24 @@ packages:
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
+    dev: false
+
+  /react-infinite-scroll-hook/4.0.4_react@18.2.0:
+    resolution: {integrity: sha512-fCjG9xwCfnV9GcAHVz9rXGnLqO55fcYsbeshSxgEH2biF8fVFHmfzZrfX4iTzoOWO1Rrz5hxrK4bBcqL5fAy9Q==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-intersection-observer-hook: 2.0.6_react@18.2.0
+    dev: false
+
+  /react-intersection-observer-hook/2.0.6_react@18.2.0:
+    resolution: {integrity: sha512-NTx+4Qat1tS9Bn4CXa6YgmbxLGcxFttV94Us7ZUEZ4mIZD3XaCpnm6U/FU35c6cJOMIfc7UfSzpju69ckfmb+Q==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:
