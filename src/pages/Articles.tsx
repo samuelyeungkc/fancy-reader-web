@@ -40,6 +40,38 @@ type FetchArticleResponse = {
   since: number
 };
 
+const fetchArticles = (
+  {
+    accessToken,
+    signal,
+    setArticles
+  }: {
+    accessToken: string;
+    signal: AbortSignal;
+    setArticles: (articles: Article[]) => void
+  }
+) => {
+  const body = {
+    state: 'unread',
+    count: 5,
+    since: 0,
+    sort: 'newest',
+    detailType: 'complete',
+  };
+  const config: RequestInit = {
+    signal: signal,
+    method: 'POST',
+    body: JSON.stringify(body)
+  };
+  fetch(`https://apps.samykc.com/pocket/articles/fetch?access_token=${accessToken}`, config)
+    .then(res => res.json())
+    .then((res: FetchArticleResponse) => {
+      setArticles(Object.values(res.list).sort((a, b) => a.sort_id - b.sort_id));
+      console.log(res.list);
+    })
+    .catch(res => console.error('fetch Article aborted', res));
+};
+
 const Articles = () => {
   const {accessToken} = useUser();
   const [articles, setArticles] = useState<Article[]>([]);
@@ -47,26 +79,7 @@ const Articles = () => {
 
   useEffect(() => {
     const abort = new AbortController();
-    const body = {
-      state: 'unread',
-      count: 5,
-      since: 0,
-      sort: 'newest',
-      detailType: 'complete',
-    };
-    const config: RequestInit = {
-      signal: abort.signal,
-      method: 'POST',
-      body: JSON.stringify(body)
-    };
-    fetch(`https://apps.samykc.com/pocket/articles/fetch?access_token=${accessToken}`, config)
-      .then(res => res.json())
-      .then((res: FetchArticleResponse) => {
-        setArticles(Object.values(res.list).sort((a, b) => a.sort_id - b.sort_id));
-        console.log(res.list);
-      })
-      .catch(res => console.error('fetch Article aborted', res));
-
+    fetchArticles({accessToken, signal: abort.signal, setArticles})
     return () => {
       abort.abort();
     };
