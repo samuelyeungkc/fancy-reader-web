@@ -53,7 +53,7 @@ const Articles = () => {
     setLoading(true);
     const body = {
       state: 'unread',
-      count: 3,
+      count: 10,
       since: 0,
       offset: articles.length,
       sort: 'newest',
