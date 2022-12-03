@@ -12,10 +12,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Outlet, useOutletContext } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { tags } from '../constants/ArticleStates';
-import Sheet from 'react-modal-sheet';
-import Container from '@mui/material/Container/Container';
-import Box from '@mui/material/Box';
-import Link  from '@mui/material/Link';
+import TagSelectionModalSheet from '../components/TagSelectionModalSheet';
 
 type FetchTagResponse = {
   tags: string[];
@@ -65,7 +62,7 @@ const Main = () => {
     fetch(`https://apps.samykc.com/pocket/tag/list?access_token=${accessToken}`, config)
       .then(res => res.json())
       .then((res: FetchTagResponse) => {
-        setAllTags(res.tags);
+        setAllTags([...Object.values(tags), ...res.tags]);
         console.log('tagList', res);
       })
       .catch(err => console.error('fetch tag error!', err));
@@ -96,48 +93,12 @@ const Main = () => {
 
       <Outlet context={{ selectedTag }}/>
 
-      <Sheet isOpen={dialogOpened} onClose={() => setDialogOpened(false)}>
-        <Sheet.Container>
-          <Container sx={{pt: 1}}>
-          <Sheet.Header>
-            <Box
-              sx={{
-                py: 2,
-                pb: 3,
-                borderBottom: '5px solid #D3D3D3'
-              }}
-            >
-            <Typography variant={'h5'}>
-              Tags
-            </Typography>
-            </Box>
-          </Sheet.Header>
-          <Sheet.Content>
-            {allTags.map((tag, i) => (
-              <Box
-                sx={{
-                  // justifyContent: 'start',
-                  py: 2,
-                  px: 2,
-                  borderBottom: i === allTags.length - 1 ? '' : '1px solid #D3D3D3'
-                }}
-              >
-              <Link
-                underline={'none'}
-                onClick={() => {
-                  setSelectedTag(tag);
-                  setDialogOpened(false);
-                }}
-              >
-                {tag}
-              </Link>
-              </Box>
-            ))}
-          </Sheet.Content>
-          </Container>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </Sheet>
+      <TagSelectionModalSheet
+        dialogOpened={dialogOpened}
+        setDialogOpened={setDialogOpened}
+        allTags={allTags}
+        setSelectedTag={setSelectedTag}
+      />
 
       <BottomNavigation
         showLabels

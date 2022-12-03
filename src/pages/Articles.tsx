@@ -3,6 +3,8 @@ import { useUser } from '../contexts/UserContext';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import { useArticleTags } from './Main';
+import { tags } from '../constants/ArticleStates';
 
 type Article = {
   item_id: number;
@@ -44,20 +46,22 @@ type FetchArticleResponse = {
 const Articles = () => {
 
   const {accessToken} = useUser();
+  const { selectedTag } = useArticleTags();
   const [articles, setArticles] = useState<Article[]>([]);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const loadMore = () => {
+  const loadMore = (refreshAll: boolean) => {
     const abort = new AbortController();
     setLoading(true);
     const body = {
       state: 'unread',
       count: 10,
       since: 0,
-      offset: articles.length,
+      offset: refreshAll ? 0 : articles.length,
       sort: 'newest',
       detailType: 'complete',
+      ...(selectedTag === tags.ALL ? {} : {tag: selectedTag})
     };
     const config: RequestInit = {
       signal: abort.signal,
@@ -70,7 +74,7 @@ const Articles = () => {
       .then((res: FetchArticleResponse) => ((res) => {
         const newArticles = Object.values(res.list).sort((a, b) => a.sort_id - b.sort_id);
         console.log(res.list);
-        setArticles((articles) => [...articles, ...newArticles]);
+        setArticles((articles) => [...(refreshAll ? [] : articles), ...newArticles]);
         setHasNextPage(Object.keys(res.list).length > 0);
       })(res))
       .finally(() => setLoading(false));
@@ -81,7 +85,7 @@ const Articles = () => {
   const [sentryRef] = useInfiniteScroll({
     loading,
     hasNextPage,
-    onLoadMore: loadMore,
+    onLoadMore: () => loadMore(false),
     // When there is an error, we stop infinite loading.
     // It can be reactivated by setting "error" state as undefined.
     disabled: error,
@@ -92,9 +96,9 @@ const Articles = () => {
   });
 
   useEffect(() => {
-    const abort = loadMore();
+    const abort = loadMore(true);
     return () => abort.abort();
-  }, [accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accessToken, selectedTag]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <List>
