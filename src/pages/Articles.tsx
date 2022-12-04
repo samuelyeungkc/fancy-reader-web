@@ -20,7 +20,7 @@ type FetchArticleResponse = {
 const Articles = () => {
 
   const {accessToken} = useUser();
-  const { selectedTag } = useArticleListContext();
+  const { selectedTag, setSelectedArticleId } = useArticleListContext();
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { articles, setArticles } = useArticleListContext();
@@ -79,7 +79,10 @@ const Articles = () => {
       <Outlet />
       {articles.map(article => {
         return (
-          <ListItem key={article.item_id}>
+          <ListItem
+            key={article.item_id}
+            onClick={() => setSelectedArticleId(`${article.item_id}`)}
+          >
             <div style={{display: 'block'}}>
               <h4>
                 {article.resolved_title}

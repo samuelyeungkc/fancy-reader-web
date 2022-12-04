@@ -4,6 +4,8 @@ import { Article } from '../types/Article';
 
 type ArticleListContextType = {
   selectedTag: string;
+  selectedArticleId: string;
+  setSelectedArticleId: (articleId: string) => void;
   articles: Article[];
   setArticles: (articles: Article[] | ((s: Article[]) => Article[])) => void;
 };
@@ -11,6 +13,8 @@ type ArticleListContextType = {
 export const ArticleListContext = createContext<ArticleListContextType>({
   selectedTag: tags.ALL,
   articles: [],
+  setSelectedArticleId: (articleId: string) => {},
+  selectedArticleId: '',
   setArticles: () => {},
 });
 

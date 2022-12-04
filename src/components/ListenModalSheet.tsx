@@ -4,11 +4,14 @@ import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import Articles from '../pages/Articles';
 import Container from '@mui/material/Container/Container';
+import { ArticleListContext, useArticleListContext } from '../contexts/ArticleListContext';
 
 const ListenModalSheet = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [selectedArticleId, setSelectedArticleId] = useState('');
+  const articleListContext = useArticleListContext();
 
   useEffect(() => setIsOpen(true), []);
 
@@ -21,7 +24,14 @@ const ListenModalSheet = () => {
               <Container>
                 <Typography>Playback speed: 1</Typography>
               </Container>
-              <Articles />
+              <ArticleListContext.Provider
+                value={{
+                  ...articleListContext,
+                  selectedArticleId,
+                  setSelectedArticleId
+                }}>
+                <Articles />
+              </ArticleListContext.Provider>
             </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop />

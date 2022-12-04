@@ -23,6 +23,7 @@ type FetchTagResponse = {
 
 const Main = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedArticleId, setSelectedArticleId] = useState('');
   const [dialogOpened, setDialogOpened] = React.useState(false);
   const [value, setValue] = React.useState('home');
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -92,7 +93,9 @@ const Main = () => {
         value={{
           selectedTag,
           articles,
-          setArticles
+          setArticles,
+          selectedArticleId,
+          setSelectedArticleId
         }}
       >
         <Outlet context={{ selectedTag }}/>
