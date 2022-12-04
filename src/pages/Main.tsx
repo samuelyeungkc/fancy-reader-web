@@ -14,12 +14,14 @@ import { useUser } from '../contexts/UserContext';
 import { tags } from '../constants/ArticleStates';
 import TagSelectionModalSheet from '../components/TagSelectionModalSheet';
 import { ArticleListContext } from '../contexts/ArticleListContext';
+import { Article } from '../types/Article';
 
 type FetchTagResponse = {
   tags: string[];
 };
 
 const Main = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
   const [dialogOpened, setDialogOpened] = React.useState(false);
   const [value, setValue] = React.useState('home');
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -84,7 +86,13 @@ const Main = () => {
       </AppBar>
       <Toolbar />
 
-      <ArticleListContext.Provider value={{ selectedTag }}>
+      <ArticleListContext.Provider
+        value={{
+          selectedTag,
+          articles,
+          setArticles
+        }}
+      >
         <Outlet context={{ selectedTag }}/>
       </ArticleListContext.Provider>
 
