@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef, MutableRefObject } from 'react';
 import { Article } from '../types/Article';
+import IconButton from '@mui/material/IconButton';
+import Slider from '@mui/material/Slider';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import Replay10Icon from '@mui/icons-material/Replay10';
+import Forward10Icon from '@mui/icons-material/Forward10';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import { getDisplayTime } from '../utils/TimeUtil';
+import Typography from '@mui/material/Typography';
+import { Stack } from '@mui/material';
 
 const AudioControls = (
   {
@@ -13,23 +22,24 @@ const AudioControls = (
     onPrevClick: () => void;
     onNextClick: () => void;
   }) => (
-  <>
-    <button onClick={onPrevClick}>
-      Prev
-    </button>
+  <Stack direction={'row'}>
+    <IconButton onClick={onPrevClick}>
+      <Replay10Icon />
+    </IconButton>
     {isPlaying ?
-      <button onClick={() => onPlayPauseClick(false)}>
-        Pause
-      </button>
+      <IconButton onClick={() => onPlayPauseClick(false)}>
+        <PauseCircleOutlineIcon />
+      </IconButton>
       :
-      <button onClick={() => onPlayPauseClick(true)}>
-        Play
-      </button>
+      <IconButton onClick={() => onPlayPauseClick(true)}>
+        <PlayCircleOutlineIcon />
+      </IconButton>
     }
-    <button onClick={onNextClick}>
-      Next
-    </button>
-  </>
+
+    <IconButton onClick={onNextClick}>
+      <Forward10Icon />
+    </IconButton>
+  </Stack>
 )
 
 const getAudioSrcFromArticle = (article: Article) => {
@@ -132,43 +142,39 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     setTrackProgress(audioRef.current.currentTime);
   }
 
-  const onScrubEnd = () => {
-    // If not already playing, start
-    // if (!isPlaying) {
-    //   setIsPlaying(true);
-    // }
-    startTimer();
-  }
-
-  const currentPercentage = duration ? `${(trackProgress / duration) * 100}%` : '0%';
-  const trackStyling = `
-  -webkit-gradient(linear, 0% 0%, 100% 0%, color-stop(${currentPercentage}, #fff), color-stop(${currentPercentage}, #777))
-`;
+  const getProgressBarMarker = (number: number) => (
+    <Typography sx={{fontSize: '14px', mt: -0.5, ml: -1.4}}>
+      {getDisplayTime(number)}
+    </Typography>
+  );
 
   return (
-    <>
-      <div>{title}</div>
-      <div>{artist}</div>
-      <div>{trackProgress}</div>
+    <Stack alignItems={'center'}>
+      <Typography>
+        {title}
+      </Typography>
+      <Typography>
+        {artist}
+      </Typography>
+      <Slider
+        value={trackProgress}
+        max={duration}
+        onChange={(e, value) => {
+          onScrub(value as number);
+        }}
+        aria-label="audio volume slider"
+      />
+      <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
+        {getProgressBarMarker(trackProgress)}
+        {getProgressBarMarker(duration)}
+      </Stack>
       <AudioControls
         isPlaying={isPlaying}
         onPlayPauseClick={setIsPlaying}
         onPrevClick={backward}
         onNextClick={forward}
       />
-      <input
-        type="range"
-        value={trackProgress}
-        step="1"
-        min="0"
-        max={duration ? duration : `${duration}`}
-        className="progress"
-        onChange={(e) => onScrub(Number(e.target.value))}
-        onMouseUp={onScrubEnd}
-        onKeyUp={onScrubEnd}
-        style={{ background: trackStyling}}
-      />
-    </>
+    </Stack>
   );
 };
 
