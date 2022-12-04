@@ -1,5 +1,5 @@
 export type Article = {
-  item_id: number;
+  item_id: string;
   resolved_id: number;
   given_url: string;
   given_title: string;
