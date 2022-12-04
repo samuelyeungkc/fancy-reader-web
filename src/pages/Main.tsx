@@ -13,20 +13,11 @@ import { Outlet } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { tags } from '../constants/ArticleStates';
 import TagSelectionModalSheet from '../components/TagSelectionModalSheet';
+import { ArticleListContext } from '../contexts/ArticleListContext';
 
 type FetchTagResponse = {
   tags: string[];
 };
-
-type TagContext = {
-  selectedTag: string;
-};
-
-const ArticleTagContext = createContext({
-  selectedTag: tags.ALL,
-});
-
-export const useArticleTags = () => useContext(ArticleTagContext);
 
 const Main = () => {
   const [dialogOpened, setDialogOpened] = React.useState(false);
@@ -93,9 +84,9 @@ const Main = () => {
       </AppBar>
       <Toolbar />
 
-      <ArticleTagContext.Provider value={{ selectedTag }}>
+      <ArticleListContext.Provider value={{ selectedTag }}>
         <Outlet context={{ selectedTag }}/>
-      </ArticleTagContext.Provider>
+      </ArticleListContext.Provider>
 
       <TagSelectionModalSheet
         dialogOpened={dialogOpened}

@@ -3,8 +3,8 @@ import { useUser } from '../contexts/UserContext';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
-import { useArticleTags } from './Main';
 import { tags } from '../constants/ArticleStates';
+import { useArticleListContext } from '../contexts/ArticleListContext';
 
 type Article = {
   item_id: number;
@@ -46,7 +46,7 @@ type FetchArticleResponse = {
 const Articles = () => {
 
   const {accessToken} = useUser();
-  const { selectedTag } = useArticleTags();
+  const { selectedTag } = useArticleListContext();
   const [articles, setArticles] = useState<Article[]>([]);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(false);
