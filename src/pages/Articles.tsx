@@ -5,6 +5,7 @@ import ListItem from '@mui/material/ListItem';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { tags } from '../constants/ArticleStates';
 import { useArticleListContext } from '../contexts/ArticleListContext';
+import { Outlet } from 'react-router-dom';
 import { Article } from '../types/Article';
 
 type FetchArticleResponse = {
@@ -75,6 +76,7 @@ const Articles = () => {
 
   return (
     <List>
+      <Outlet />
       {articles.map(article => {
         return (
           <ListItem key={article.item_id}>

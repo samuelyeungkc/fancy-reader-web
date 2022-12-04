@@ -9,11 +9,12 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
 import HomeIcon from '@mui/icons-material/Home';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { tags } from '../constants/ArticleStates';
 import TagSelectionModalSheet from '../components/TagSelectionModalSheet';
 import { ArticleListContext } from '../contexts/ArticleListContext';
+import { PATH } from '../constants/Path';
 import { Article } from '../types/Article';
 
 type FetchTagResponse = {
@@ -27,6 +28,7 @@ const Main = () => {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>(tags.ALL);
   const { accessToken } = useUser();
+  const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newTab: string) => {
     if (value === newTab) {
@@ -75,7 +77,7 @@ const Main = () => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={() => {alert('listen')}}
+            onClick={() => navigate(`/${PATH.LISTEN}`)}
           >
             <HeadphonesIcon />
           </IconButton>

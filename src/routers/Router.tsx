@@ -6,6 +6,7 @@ import Root from '../Root';
 import OAuth from '../pages/Oauth';
 import Articles from '../pages/Articles';
 import Main from '../pages/Main';
+import ListenModalSheet from '../components/ListenModalSheet';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,12 @@ const router = createBrowserRouter([
           {
             path: `/${PATH.ARTICLES}`,
             element: <Articles />,
+            children: [
+              {
+                path: `/${PATH.LISTEN}`,
+                element: <ListenModalSheet />,
+              }
+            ]
           }
         ]
       }
