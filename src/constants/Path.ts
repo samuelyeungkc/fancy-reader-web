@@ -2,12 +2,14 @@ const SIGNIN = 'signin';
 const OAUTH = 'oauth';
 const ARTICLES = 'articles';
 const MAIN = 'main';
+const LISTEN = 'listen';
 
 export const PATH = {
   SIGNIN: SIGNIN,
   OAUTH: OAUTH,
   MAIN: MAIN,
   ARTICLES: `${MAIN}/${ARTICLES}`,
+  LISTEN: `${MAIN}/${ARTICLES}/${LISTEN}`,
 };
 
 export const LANDING_PAGES_PATH = [
