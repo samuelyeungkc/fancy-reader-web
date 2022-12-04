@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
 import HomeIcon from '@mui/icons-material/Home';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { tags } from '../constants/ArticleStates';
 import TagSelectionModalSheet from '../components/TagSelectionModalSheet';
@@ -22,15 +22,17 @@ type TagContext = {
   selectedTag: string;
 };
 
-export const useArticleTags = () => {
-  return useOutletContext<TagContext>();
-};
+const ArticleTagContext = createContext({
+  selectedTag: tags.ALL,
+});
+
+export const useArticleTags = () => useContext(ArticleTagContext);
 
 const Main = () => {
   const [dialogOpened, setDialogOpened] = React.useState(false);
   const [value, setValue] = React.useState('home');
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string>(tags.UNTAGGED);
+  const [selectedTag, setSelectedTag] = useState<string>(tags.ALL);
   const { accessToken } = useUser();
 
   const handleTabChange = (event: React.SyntheticEvent, newTab: string) => {
@@ -91,7 +93,9 @@ const Main = () => {
       </AppBar>
       <Toolbar />
 
-      <Outlet context={{ selectedTag }}/>
+      <ArticleTagContext.Provider value={{ selectedTag }}>
+        <Outlet context={{ selectedTag }}/>
+      </ArticleTagContext.Provider>
 
       <TagSelectionModalSheet
         dialogOpened={dialogOpened}
