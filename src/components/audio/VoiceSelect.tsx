@@ -32,7 +32,7 @@ const VoiceSelect = ({ selectedVoice, setSelectedVoice }: VoiceSelectProps) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        {selectedVoice}
+        {Object.entries(availableVoices).filter(([name, value]) => value === selectedVoice)[0][0]}
       </Button>
       <Menu
         sx={{zIndex: 99999999}}
