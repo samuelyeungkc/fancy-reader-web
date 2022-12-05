@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack';
 import { availableVoices } from '../constants/TtsVoice';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StarIcon from '@mui/icons-material/Star';
+import PlaybackRateSelect from './audio/PlaybackRateSelect';
 import VoiceSelect from './audio/VoiceSelect';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -22,7 +23,8 @@ const AudioControls = (
     onPlayPauseClick,
     onPrevClick,
     onNextClick,
-    VoiceComponent
+    VoiceComponent,
+    PlaybackComponent
   }: {
     isLoading: boolean;
     isPlaying: boolean;
@@ -30,11 +32,13 @@ const AudioControls = (
     onPrevClick: () => void;
     onNextClick: () => void;
     VoiceComponent: JSX.Element;
+    PlaybackComponent: JSX.Element;
   }) => (
   <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
 
     <Stack direction={'row'} sx={{flexGrow: 1, flexBasis: 0}}>
       {VoiceComponent}
+      {PlaybackComponent}
     </Stack>
 
     <Stack direction={'row'} sx={{flexGrow: 1, justifyContent: 'center', flexBasis: 0}}>
@@ -98,6 +102,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
   const [ttsVoice, setTtsVoice] = useState(availableVoices['Wavenet-H']);
+  const [playbackRate, setPlaybackRate] = useState(1.0);
 
   const audioRef = useRef(new Audio(''));
   const intervalRef = useRef<number>();
@@ -210,6 +215,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       <AudioControls
         isLoading={networkLoading}
         VoiceComponent={<VoiceSelect selectedVoice={ttsVoice} setSelectedVoice={setTtsVoice} />}
+        PlaybackComponent={<PlaybackRateSelect playbackRate={playbackRate} setSelectedRate={setPlaybackRate}/>}
         isPlaying={isPlaying}
         onPlayPauseClick={setIsPlaying}
         onPrevClick={backward}
