@@ -42,23 +42,27 @@ const AudioControls = (
     </Stack>
 
     <Stack direction={'row'} sx={{flexGrow: 1, justifyContent: 'center', flexBasis: 0}}>
-      {isLoading && <CircularProgress />}
-      <IconButton onClick={onPrevClick}>
-        <Replay10Icon />
-      </IconButton>
-      {isPlaying ?
-        <IconButton onClick={() => onPlayPauseClick(false)}>
-          <PauseCircleOutlineIcon />
-        </IconButton>
+      {isLoading ?
+        <CircularProgress />
         :
-        <IconButton onClick={() => onPlayPauseClick(true)}>
-          <PlayCircleOutlineIcon />
-        </IconButton>
+        <>
+          <IconButton onClick={onPrevClick}>
+            <Replay10Icon />
+          </IconButton>
+          {isPlaying ?
+            <IconButton onClick={() => onPlayPauseClick(false)}>
+              <PauseCircleOutlineIcon />
+            </IconButton>
+            :
+            <IconButton onClick={() => onPlayPauseClick(true)}>
+              <PlayCircleOutlineIcon />
+            </IconButton>
+          }
+          <IconButton onClick={onNextClick}>
+            <Forward10Icon />
+          </IconButton>
+        </>
       }
-      <IconButton onClick={onNextClick}>
-        <Forward10Icon />
-      </IconButton>
-
     </Stack>
 
     <Stack direction={'row'} style={{flexGrow: 1, justifyContent: 'end', flexBasis: 0}}>
