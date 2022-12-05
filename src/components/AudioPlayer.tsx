@@ -13,15 +13,18 @@ import { availableVoices } from '../constants/TtsVoice';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StarIcon from '@mui/icons-material/Star';
 import VoiceSelect from './audio/VoiceSelect';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const AudioControls = (
   {
+    isLoading,
     isPlaying,
     onPlayPauseClick,
     onPrevClick,
     onNextClick,
     VoiceComponent
   }: {
+    isLoading: boolean;
     isPlaying: boolean;
     onPlayPauseClick: (play: boolean) => void;
     onPrevClick: () => void;
@@ -30,11 +33,12 @@ const AudioControls = (
   }) => (
   <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
 
-    <Stack style={{flexGrow: 1, flexBasis: 0}}>
+    <Stack direction={'row'} sx={{flexGrow: 1, flexBasis: 0}}>
       {VoiceComponent}
     </Stack>
 
     <Stack direction={'row'} sx={{flexGrow: 1, justifyContent: 'center', flexBasis: 0}}>
+      {isLoading && <CircularProgress />}
       <IconButton onClick={onPrevClick}>
         <Replay10Icon />
       </IconButton>
@@ -88,6 +92,7 @@ const pauseAudio = (
 const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
   // State
+  const [networkLoading, setNetworkLoading] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [title, setTitle] = useState('');
@@ -115,16 +120,12 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       const { networkState } = audioRef.current;
       switch (networkState) {
         case audioRef.current.NETWORK_EMPTY:
-          console.log('network empty');
-          break;
         case audioRef.current.NETWORK_IDLE:
-          console.log('network IDLE');
-          break;
         case audioRef.current.NETWORK_NO_SOURCE:
-          console.log('network NOSOURCE');
+          setNetworkLoading(false);
           break;
         case audioRef.current.NETWORK_LOADING:
-          console.log('network LOADING');
+          setNetworkLoading(true);
           break;
       }
       setTrackProgress(audioRef.current.currentTime);
@@ -192,6 +193,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         {getProgressBarMarker(duration)}
       </Stack>
       <AudioControls
+        isLoading={networkLoading}
         VoiceComponent={<VoiceSelect selectedVoice={ttsVoice} setSelectedVoice={setTtsVoice} />}
         isPlaying={isPlaying}
         onPlayPauseClick={setIsPlaying}
