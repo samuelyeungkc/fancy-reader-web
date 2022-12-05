@@ -87,8 +87,7 @@ const Articles = (
   useEffect(() => {
     // init load is not required if in modal as there are existing articles in context loaded
     if (!isModal) {
-      const abort = loadMore(true);
-      return () => abort.abort();
+      setArticles([]);
     }
   }, [accessToken, selectedTag]); // eslint-disable-line react-hooks/exhaustive-deps
 
