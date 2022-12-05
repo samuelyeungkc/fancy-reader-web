@@ -135,13 +135,17 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   }
 
   useEffect(() => {
-    audioRef.current.src = getAudioSrc(article);
+    updateAudioProgress(0);
     setTitle(article?.resolved_title || article?.given_title || '');
     setArtist(article?.domain_metadata?.name || article?.resolved_url.split('/')[2] || '');
   }, [article]);
 
   useEffect(() => {
     if (isPlaying) {
+      const newSrc = getAudioSrc(article);
+      if (newSrc !== audioRef.current.src) {
+        audioRef.current.src = getAudioSrc(article);
+      }
       audioRef.current.play();
       startTimer();
     } else {
@@ -159,18 +163,29 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     }
   }, [article]);
 
+  useEffect(() => {
+    audioRef.current.playbackRate = playbackRate;
+  }, [playbackRate]);
+
   const onScrub = (value: number) => {
     // Clear any timers already running
     clearInterval(intervalRef.current);
-    audioRef.current.currentTime = value;
-    setTrackProgress(audioRef.current.currentTime);
+    updateAudioProgress(value);
   }
 
-  const getProgressBarMarker = (number: number) => (
-    <Typography sx={{fontSize: '14px', mt: -0.5, ml: -1.4}}>
-      {getDisplayTime(number)}
-    </Typography>
-  );
+  const updateAudioProgress = (newProgress: number) => {
+    audioRef.current.currentTime = newProgress;
+    setTrackProgress(newProgress);
+  };
+
+  const getProgressBarMarker = (number: number) => {
+    const seconds = isNaN(number) ? 0 : number;
+    return (
+      <Typography sx={{fontSize: '14px', mt: -0.5, ml: -1.4}}>
+        {getDisplayTime(seconds)}
+      </Typography>
+    )
+  };
 
   return (
     <Stack alignItems={'center'}>
