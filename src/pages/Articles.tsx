@@ -5,7 +5,6 @@ import ListItem from '@mui/material/ListItem';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { tags } from '../constants/ArticleStates';
 import { useArticleListContext } from '../contexts/ArticleListContext';
-import { Outlet } from 'react-router-dom';
 import { Article } from '../types/Article';
 import Typography from '@mui/material/Typography';
 import { getDomain } from '../utils/ArticleUtil';
@@ -20,11 +19,21 @@ type FetchArticleResponse = {
   since: number
 };
 
-const Articles = ({ showNonArticleAltStyle }: { showNonArticleAltStyle: boolean }) => {
+type ArticlesProps = {
+  showNonArticleAltStyle: boolean;
+  isModal?: boolean;
+};
+
+const Articles = (
+  {
+    showNonArticleAltStyle,
+    isModal
+  }: ArticlesProps
+) => {
 
   const {accessToken} = useUser();
   const { selectedTag, setSelectedArticleId } = useArticleListContext();
-  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [loading, setLoading] = useState(false);
   const { articles, setArticles } = useArticleListContext();
 
@@ -76,8 +85,11 @@ const Articles = ({ showNonArticleAltStyle }: { showNonArticleAltStyle: boolean 
 
   // init load
   useEffect(() => {
-    const abort = loadMore(true);
-    return () => abort.abort();
+    // init load is not required if in modal as there are existing articles in context loaded
+    if (!isModal) {
+      const abort = loadMore(true);
+      return () => abort.abort();
+    }
   }, [accessToken, selectedTag]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

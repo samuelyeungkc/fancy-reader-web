@@ -41,7 +41,7 @@ const ListenModalSheet = () => {
                   selectedArticleId,
                   setSelectedArticleId
                 }}>
-                <Articles showNonArticleAltStyle={true}/>
+                <Articles showNonArticleAltStyle={true} isModal={true} />
               </ArticleListContext.Provider>
             </Sheet.Content>
         </Sheet.Container>
