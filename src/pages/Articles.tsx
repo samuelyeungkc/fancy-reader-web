@@ -109,7 +109,7 @@ const Articles = (
                 {article.time_to_read ? `${article.time_to_read} mins · ` : ''}
                 {getDomain(article)}
               </Typography>
-              <Typography>
+              <div>
                 {
                   Object.keys(article.tags ?? {})
                     .map((tag) =>
@@ -121,7 +121,7 @@ const Articles = (
                       />
                     )
                 }
-              </Typography>
+              </div>
             </div>
           </ListItem>
         )
