@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 
 type PlaybackRateSelectProps = {

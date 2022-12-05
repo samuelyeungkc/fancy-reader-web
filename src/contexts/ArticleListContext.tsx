@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { tags } from '../constants/ArticleStates';
 import { Article } from '../types/Article';
 
@@ -13,7 +13,7 @@ type ArticleListContextType = {
 export const ArticleListContext = createContext<ArticleListContextType>({
   selectedTag: tags.ALL,
   articles: [],
-  setSelectedArticleId: (articleId: string) => {},
+  setSelectedArticleId: (_: string) => {},
   selectedArticleId: '',
   setArticles: () => {},
 });
