@@ -206,7 +206,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       </Typography>
       <Slider
         value={trackProgress}
-        max={duration}
+        max={isNaN(duration) ? 0 : duration}
         onChange={(e, value) => {
           onScrub(value as number);
         }}
