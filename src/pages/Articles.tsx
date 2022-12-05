@@ -7,6 +7,9 @@ import { tags } from '../constants/ArticleStates';
 import { useArticleListContext } from '../contexts/ArticleListContext';
 import { Outlet } from 'react-router-dom';
 import { Article } from '../types/Article';
+import Typography from '@mui/material/Typography';
+import { getDomain } from '../utils/ArticleUtil';
+import Chip from '@mui/material/Chip';
 
 type FetchArticleResponse = {
   status: number;
@@ -17,7 +20,7 @@ type FetchArticleResponse = {
   since: number
 };
 
-const Articles = () => {
+const Articles = ({ showNonArticleAltStyle }: { showNonArticleAltStyle: boolean }) => {
 
   const {accessToken} = useUser();
   const { selectedTag, setSelectedArticleId } = useArticleListContext();
@@ -56,6 +59,8 @@ const Articles = () => {
   };
   const error = false;
 
+  const isArticleErrorStyle = (article: Article) => showNonArticleAltStyle && article.is_article === '0';
+
   const [sentryRef] = useInfiniteScroll({
     loading,
     hasNextPage,
@@ -69,6 +74,7 @@ const Articles = () => {
     // rootMargin: '0px 0px 400px 0px',
   });
 
+  // init load
   useEffect(() => {
     const abort = loadMore(true);
     return () => abort.abort();
@@ -76,24 +82,35 @@ const Articles = () => {
 
   return (
     <List>
-      <Outlet />
       {articles.map(article => {
         return (
           <ListItem
             key={article.item_id}
             onClick={() => setSelectedArticleId(`${article.item_id}`)}
+            sx={{ backgroundColor: isArticleErrorStyle(article) ? 'red' : ''}}
           >
             <div style={{display: 'block'}}>
-              <h4>
+              {/*<Typography variant={'body1'}>*/}
+              <Typography variant={'body1'} color={isArticleErrorStyle(article) ? 'white' : 'black'}>
                 {article.resolved_title}
-              </h4>
-              <div>item id {article.item_id}</div>
-              <div>name {article.domain_metadata?.name}</div>
-              <div>sort id {article.sort_id}</div>
-              <div>status {article.status}</div>
-              <div>word count {article.word_count}</div>
-              <div>word count {article.time_to_read}</div>
-              <div>listen {article.listen_duration_estimate}</div>
+              </Typography>
+              <Typography variant={'caption'} color={isArticleErrorStyle(article) ? 'white' : 'black'}>
+                {article.time_to_read ? `${article.time_to_read} mins · ` : ''}
+                {getDomain(article)}
+              </Typography>
+              <Typography>
+                {
+                  Object.keys(article.tags ?? {})
+                    .map((tag) =>
+                      <Chip
+                        key={tag}
+                        size={'small'}
+                        color={tag.includes('issue') ? 'error' : 'info'}
+                        label={tag}
+                      />
+                    )
+                }
+              </Typography>
             </div>
           </ListItem>
         )

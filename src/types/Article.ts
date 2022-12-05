@@ -15,6 +15,12 @@ export type Article = {
   word_count: string; // "1010"
   time_to_read: number;
   top_image_url: string;
+  tags: {
+    [key: string]: {
+      item_id: string;
+      tag: string;
+    }
+  }
   image: {
     item_id: string; // "3750857667"
     src: string; // url

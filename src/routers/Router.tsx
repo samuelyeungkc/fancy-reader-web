@@ -7,6 +7,7 @@ import OAuth from '../pages/Oauth';
 import Articles from '../pages/Articles';
 import Main from '../pages/Main';
 import ListenModalSheet from '../components/ListenModalSheet';
+import MainArticleListTab from '../pages/MainArticleListTab';
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: `/${PATH.ARTICLES}`,
-            element: <Articles />,
+            element: <MainArticleListTab />,
             children: [
               {
                 path: `/${PATH.LISTEN}`,

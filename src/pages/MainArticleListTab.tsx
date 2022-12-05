@@ -6,7 +6,7 @@ const MainArticleListTab = () => {
   return (
     <>
       <Outlet />
-      <Articles />
+      <Articles showNonArticleAltStyle={true}/>
     </>
   );
 };
