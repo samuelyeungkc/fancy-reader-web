@@ -42,7 +42,7 @@ const Articles = (
     setLoading(true);
     const body = {
       state: 'unread',
-      count: 10,
+      count: 30,
       since: 0,
       offset: refreshAll ? 0 : articles.length,
       sort: 'newest',
