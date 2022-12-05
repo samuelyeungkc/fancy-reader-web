@@ -8,7 +8,11 @@ import Forward10Icon from '@mui/icons-material/Forward10';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import { getDisplayTime } from '../utils/TimeUtil';
 import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { availableVoices } from '../constants/TtsVoice';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import StarIcon from '@mui/icons-material/Star';
+import VoiceSelect from './audio/VoiceSelect';
 
 const AudioControls = (
   {
@@ -16,29 +20,47 @@ const AudioControls = (
     onPlayPauseClick,
     onPrevClick,
     onNextClick,
+    VoiceComponent
   }: {
     isPlaying: boolean;
     onPlayPauseClick: (play: boolean) => void;
     onPrevClick: () => void;
     onNextClick: () => void;
+    VoiceComponent: JSX.Element;
   }) => (
-  <Stack direction={'row'}>
-    <IconButton onClick={onPrevClick}>
-      <Replay10Icon />
-    </IconButton>
-    {isPlaying ?
-      <IconButton onClick={() => onPlayPauseClick(false)}>
-        <PauseCircleOutlineIcon />
-      </IconButton>
-      :
-      <IconButton onClick={() => onPlayPauseClick(true)}>
-        <PlayCircleOutlineIcon />
-      </IconButton>
-    }
+  <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
 
-    <IconButton onClick={onNextClick}>
-      <Forward10Icon />
-    </IconButton>
+    <Stack style={{flexGrow: 1, flexBasis: 0}}>
+      {VoiceComponent}
+    </Stack>
+
+    <Stack direction={'row'} sx={{flexGrow: 1, justifyContent: 'center', flexBasis: 0}}>
+      <IconButton onClick={onPrevClick}>
+        <Replay10Icon />
+      </IconButton>
+      {isPlaying ?
+        <IconButton onClick={() => onPlayPauseClick(false)}>
+          <PauseCircleOutlineIcon />
+        </IconButton>
+        :
+        <IconButton onClick={() => onPlayPauseClick(true)}>
+          <PlayCircleOutlineIcon />
+        </IconButton>
+      }
+      <IconButton onClick={onNextClick}>
+        <Forward10Icon />
+      </IconButton>
+
+    </Stack>
+
+    <Stack direction={'row'} style={{flexGrow: 1, justifyContent: 'end', flexBasis: 0}}>
+      <IconButton>
+        <StarIcon />
+      </IconButton>
+      <IconButton>
+        <InventoryIcon />
+      </IconButton>
+    </Stack>
   </Stack>
 )
 
@@ -70,6 +92,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
+  const [ttsVoice, setTtsVoice] = useState(availableVoices.WavenetH);
 
   const audioRef = useRef(new Audio(''));
   const intervalRef = useRef<number>();
@@ -169,6 +192,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         {getProgressBarMarker(duration)}
       </Stack>
       <AudioControls
+        VoiceComponent={<VoiceSelect selectedVoice={ttsVoice} setSelectedVoice={setTtsVoice} />}
         isPlaying={isPlaying}
         onPlayPauseClick={setIsPlaying}
         onPrevClick={backward}
