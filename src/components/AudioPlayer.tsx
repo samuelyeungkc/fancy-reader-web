@@ -92,7 +92,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
-  const [ttsVoice, setTtsVoice] = useState(availableVoices.WavenetH);
+  const [ttsVoice, setTtsVoice] = useState(availableVoices['Wavenet-H']);
 
   const audioRef = useRef(new Audio(''));
   const intervalRef = useRef<number>();
