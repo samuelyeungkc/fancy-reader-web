@@ -15,6 +15,7 @@ import StarIcon from '@mui/icons-material/Star';
 import PlaybackRateSelect from './audio/PlaybackRateSelect';
 import VoiceSelect from './audio/VoiceSelect';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useUser } from '../contexts/UserContext';
 
 const AudioControls = (
   {
@@ -76,17 +77,16 @@ const AudioControls = (
   </Stack>
 )
 
-const getAudioSrcFromArticle = (article: Article) => {
+const getAudioSrcFromArticle = (article: Article, accessToken: string) => {
   const endpt = `https://apps.samykc.com/pocket/articles/article/tts`;
-  const key = `slfjaslfjslfjdsklfjsdklfjafiowpepqzvcnlvlvriwuehkjnvnkjxcyviLKDFJVIDCDQNZpq`;
   const url = article.resolved_url;
   const voice = 'en-US-Wavenet-H';
-  const audioSrc = `${endpt}?key=${key}&url=${url}&pocket_id=${article.item_id}&voice=${voice}`;
+  const audioSrc = `${endpt}?url=${url}&pocket_id=${article.item_id}&voice=${voice}&access_token=${accessToken}`;
   return audioSrc;
 };
 
-const getAudioSrc = (article: Article | undefined) => {
-  return article ? getAudioSrcFromArticle(article) : '';
+const getAudioSrc = (article: Article | undefined, accessToken: string) => {
+  return article ? getAudioSrcFromArticle(article, accessToken) : '';
 };
 
 const pauseAudio = (
@@ -107,6 +107,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [artist, setArtist] = useState('');
   const [ttsVoice, setTtsVoice] = useState(availableVoices['Wavenet-H']);
   const [playbackRate, setPlaybackRate] = useState(1.0);
+  const { accessToken } = useUser();
 
   const audioRef = useRef(new Audio(''));
   const intervalRef = useRef<number>();
@@ -151,9 +152,9 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
   useEffect(() => {
     if (isPlaying) {
-      const newSrc = getAudioSrc(article);
+      const newSrc = getAudioSrc(article, accessToken);
       if (newSrc !== audioRef.current.src) {
-        audioRef.current.src = getAudioSrc(article);
+        audioRef.current.src = getAudioSrc(article, accessToken);
       }
       audioRef.current.play();
       startTimer();
@@ -161,7 +162,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, accessToken]);
 
   useEffect(() => {
     setIsPlaying(false);
