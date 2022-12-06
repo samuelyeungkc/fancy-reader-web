@@ -89,6 +89,7 @@ const Articles = (
     if (!isModal) {
       setArticles([]);
     }
+    setHasNextPage(true);
   }, [accessToken, selectedTag]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
