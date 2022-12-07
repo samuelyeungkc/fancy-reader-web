@@ -78,7 +78,8 @@ const AudioControls = (
 )
 
 const getAudioSrcFromArticle = (article: Article, accessToken: string) => {
-  const endpt = `https://apps.samykc.com/pocket/articles/article/tts`;
+  const host = `https://apps.samykc.com`;
+  const endpt = `${host}/pocket/articles/article/tts`;
   const url = article.resolved_url;
   const voice = 'en-US-Wavenet-H';
   const audioSrc = `${endpt}?url=${url}&pocket_id=${article.item_id}&voice=${voice}&access_token=${accessToken}`;
