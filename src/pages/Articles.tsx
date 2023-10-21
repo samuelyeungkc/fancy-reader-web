@@ -68,7 +68,7 @@ const Articles = (
   };
   const error = false;
 
-  const isArticleErrorStyle = (article: Article) => showNonArticleAltStyle && article.is_article === '0';
+  const isArticleErrorStyle = (article: Article) => showNonArticleAltStyle && article.is_article === '0' && !article.given_url.includes('samykc.com');
 
   const [sentryRef] = useInfiniteScroll({
     loading,
