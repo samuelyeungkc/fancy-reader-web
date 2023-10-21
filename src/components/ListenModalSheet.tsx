@@ -32,17 +32,19 @@ const ListenModalSheet = () => {
         <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content>
-              <Container>
-                <AudioPlayer article={getSelectedArticle()} />
-              </Container>
-              <ArticleListContext.Provider
-                value={{
-                  ...articleListContext,
-                  selectedArticleId,
-                  setSelectedArticleId
-                }}>
-                <Articles showNonArticleAltStyle={true} isModal={true} />
-              </ArticleListContext.Provider>
+              <Sheet.Scroller>
+                <Container>
+                  <AudioPlayer article={getSelectedArticle()} />
+                </Container>
+                <ArticleListContext.Provider
+                  value={{
+                    ...articleListContext,
+                    selectedArticleId,
+                    setSelectedArticleId
+                  }}>
+                  <Articles showNonArticleAltStyle={true} isModal={true} />
+                </ArticleListContext.Provider>
+              </Sheet.Scroller>
             </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop />
