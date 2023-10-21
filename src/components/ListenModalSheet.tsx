@@ -30,12 +30,13 @@ const ListenModalSheet = () => {
     <div>
       <Sheet isOpen={isOpen} onClose={() => navigate(-1)}>
         <Sheet.Container>
-            <Sheet.Header />
+          <Sheet.Header>
+            <Container>
+              <AudioPlayer article={getSelectedArticle()} />
+            </Container>
+          </Sheet.Header>
             <Sheet.Content>
               <Sheet.Scroller>
-                <Container>
-                  <AudioPlayer article={getSelectedArticle()} />
-                </Container>
                 <ArticleListContext.Provider
                   value={{
                     ...articleListContext,
