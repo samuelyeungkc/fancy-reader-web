@@ -113,6 +113,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
   const audioRef = useRef(new Audio(''));
   const intervalRef = useRef<number>();
+  const refAudioUrl = useRef<string>('');
   const { duration } = audioRef.current;
 
   const forward = () => {
@@ -154,12 +155,24 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
   useEffect(() => {
     if (isPlaying) {
+      setNetworkLoading(true);
       const newSrc = getAudioSrc(article, accessToken);
-      if (newSrc !== audioRef.current.src) {
-        audioRef.current.src = getAudioSrc(article, accessToken);
+      if (newSrc !== refAudioUrl.current) {
+        refAudioUrl.current = newSrc;
+        fetch(newSrc).then((res) => {
+          return res.text();
+        }).then((data) => {
+          console.log('audio src', data);
+          audioRef.current.src = `data:audio/mp3;base64,${data}`;
+          audioRef.current.play();
+          startTimer();
+        }).finally(() => {
+          setNetworkLoading(false);
+        });
+      } else {
+        audioRef.current.play();
+        startTimer();
       }
-      audioRef.current.play();
-      startTimer();
     } else {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
