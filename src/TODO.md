@@ -1,0 +1,3 @@
+- implement total audio time
+- implement scrolling
+- implement persistent database
