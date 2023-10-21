@@ -108,7 +108,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
   const [ttsVoice, setTtsVoice] = useState(availableVoices['Wavenet-H']);
-  const [playbackRate, setPlaybackRate] = useState(1.0);
+  const [playbackRate, setPlaybackRate] = useState(2.6);
   const { accessToken } = useUser();
 
   const audioRef = useRef(new Audio(''));
