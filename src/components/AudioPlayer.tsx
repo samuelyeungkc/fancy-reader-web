@@ -77,18 +77,17 @@ const AudioControls = (
   </Stack>
 )
 
-const getAudioSrcFromArticle = (article: Article, accessToken: string) => {
+const getAudioSrcFromArticle = (article: Article, accessToken: string, voice: string) => {
   const host = `https://apps.samykc.com`;
   const endpt = `${host}/pocket/articles/article/tts`;
   const url = article.resolved_url;
-  const voice = 'en-US-Wavenet-H';
   const isArticle = article.is_article === '1';
   const key = 'slfjaslfjslfjdsklfjsdklfjafiowpepqzvcnlvlvriwuehkjnvnkjxcyviLKDFJVIDCDQNZpq';
   return `${endpt}?key=${key}&url=${url}&pocket_id=${article.item_id}&voice=${voice}&access_token=${accessToken}&is_article=${isArticle}`;
 };
 
-const getAudioSrc = (article: Article | undefined, accessToken: string) => {
-  return article ? getAudioSrcFromArticle(article, accessToken) : '';
+const getAudioSrc = (article: Article | undefined, accessToken: string, ttsVoice: string) => {
+  return article ? getAudioSrcFromArticle(article, accessToken, ttsVoice) : '';
 };
 
 const pauseAudio = (
@@ -156,7 +155,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   useEffect(() => {
     if (isPlaying) {
       setNetworkLoading(true);
-      const newSrc = getAudioSrc(article, accessToken);
+      const newSrc = getAudioSrc(article, accessToken, ttsVoice);
       if (newSrc !== refAudioUrl.current) {
         refAudioUrl.current = newSrc;
         fetch(newSrc).then((res) => {
