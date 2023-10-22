@@ -163,6 +163,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         }).then((data) => {
           console.log('audio src', data);
           audioRef.current.src = `data:audio/mp3;base64,${data}`;
+          audioRef.current.playbackRate = playbackRate;
           audioRef.current.play();
           startTimer();
         }).finally(() => {
