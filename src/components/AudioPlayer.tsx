@@ -17,6 +17,18 @@ import VoiceSelect from './audio/VoiceSelect';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUser } from '../contexts/UserContext';
 
+type TtsProgress = {
+  id?: number;
+  pocketId: string;
+  progressSecond: number;
+  completed: number;
+  timeUpdated: number;
+  voice?: string;
+};
+
+const UPDATE_THRESHOLD = 10;
+const COMPLETE_THRESHOLD = 20;
+
 const host = `https://apps.samykc.com`;
 const AudioControls = (
   {
@@ -117,6 +129,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const { accessToken } = useUser();
 
   const audioRef = useRef(new Audio(''));
+  const refLastSyncProgressSec = useRef<number>(0);
   const intervalRef = useRef<number>();
   const refAudioUrl = useRef<string>('');
   const { duration } = audioRef.current;
@@ -128,6 +141,47 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const backward = () => {
     audioRef.current.currentTime = audioRef.current.currentTime - 15;
   };
+
+  useEffect(() => {
+    if (article) {
+      fetch(getAudioProgressEndpoint(article))
+        .then((res) => {
+          return res.json();
+        }).then(({progressSecond}: TtsProgress) => {
+          audioRef.current.currentTime = progressSecond;
+          setTrackProgress(progressSecond);
+        });
+    }
+  }, [article]);
+
+  /**
+   * check if current time > last save time by 10 sec
+   * if yes, update last save time and save progress
+   */
+  const syncProgress = () => {
+    const {currentTime, duration} = audioRef.current;
+    const lastSyncSec = refLastSyncProgressSec.current;
+    if (Math.abs(currentTime - lastSyncSec) > UPDATE_THRESHOLD) {
+      refLastSyncProgressSec.current = currentTime;
+      // save progress
+      fetch(getAudioProgressEndpoint(article), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          pocketId: article?.item_id,
+          progressSecond: currentTime,
+          completed: duration - currentTime < COMPLETE_THRESHOLD ? 1 : 0,
+          timeUpdated: Date.now(),
+          voice: ttsVoice,
+        }),
+      }).catch((err) => {
+        console.log('error saving progress', err);
+      });
+    }
+  };
+
 
   const startTimer = () => {
     // Clear any timers already running
@@ -147,6 +201,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
           break;
       }
       setTrackProgress(audioRef.current.currentTime);
+      syncProgress();
     };
 
     intervalRef.current = setInterval(handler, 1000);
@@ -164,12 +219,14 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       const newSrc = getAudioSrc(article, accessToken, ttsVoice);
       if (newSrc !== refAudioUrl.current) {
         refAudioUrl.current = newSrc;
+        const currentProgress = audioRef.current.currentTime;
         fetch(newSrc).then((res) => {
           return res.text();
         }).then((data) => {
           console.log('audio src', data);
           audioRef.current.src = `data:audio/mp3;base64,${data}`;
           audioRef.current.playbackRate = playbackRate;
+          audioRef.current.currentTime = currentProgress;
           audioRef.current.play();
           startTimer();
         }).finally(() => {
@@ -182,6 +239,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     } else {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
+      syncProgress();
     }
   }, [isPlaying, accessToken]);
 
