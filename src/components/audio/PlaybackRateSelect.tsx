@@ -26,8 +26,6 @@ const PlaybackRateSelect = (
   // }
 
   const id = 'rate-selection-id';
-  console.log('hereeee')
-
   const displayPlaybackRate = () => {
     const split = (rate: number) => {
       const rateStr = `${rate}`;

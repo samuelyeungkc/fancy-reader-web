@@ -223,7 +223,6 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         fetch(newSrc).then((res) => {
           return res.text();
         }).then((data) => {
-          console.log('audio src', data);
           audioRef.current.src = `data:audio/mp3;base64,${data}`;
           audioRef.current.playbackRate = playbackRate;
           audioRef.current.currentTime = currentProgress;
