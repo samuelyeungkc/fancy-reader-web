@@ -158,10 +158,10 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
    * check if current time > last save time by 10 sec
    * if yes, update last save time and save progress
    */
-  const syncProgress = () => {
-    const {currentTime, duration} = audioRef.current;
+  const syncProgress = (forceUpdate: boolean) => {
+    const { currentTime, duration } = audioRef.current;
     const lastSyncSec = refLastSyncProgressSec.current;
-    if (Math.abs(currentTime - lastSyncSec) > UPDATE_THRESHOLD) {
+    if (forceUpdate || Math.abs(currentTime - lastSyncSec) > UPDATE_THRESHOLD) {
       refLastSyncProgressSec.current = currentTime;
       // save progress
       fetch(getAudioProgressEndpoint(article), {
@@ -190,7 +190,14 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
 
     const handler: TimerHandler = () => {
-      const { networkState } = audioRef.current;
+      const { current: { currentTime, duration, networkState } } = audioRef;
+
+      // early return and clear interval if audio is completed
+      if (!isPlaying || currentTime === duration) {
+        clearInterval(intervalRef.current);
+        setIsPlaying(false);
+      }
+
       switch (networkState) {
         case audioRef.current.NETWORK_EMPTY:
         case audioRef.current.NETWORK_IDLE:
@@ -202,7 +209,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
           break;
       }
       setTrackProgress(audioRef.current.currentTime);
-      syncProgress();
+      syncProgress(false);
     };
 
     intervalRef.current = setInterval(handler, 1000);
@@ -239,7 +246,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     } else {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
-      syncProgress();
+      syncProgress(true);
     }
   }, [isPlaying, accessToken]);
 
