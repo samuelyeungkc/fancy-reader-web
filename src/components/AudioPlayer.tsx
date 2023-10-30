@@ -9,7 +9,7 @@ import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import { getDisplayTime } from '../utils/TimeUtil';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { availableVoices } from '../constants/TtsVoice';
+import { DEFAULT_VOICE, invertAvailableVoices } from '../constants/TtsVoice';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StarIcon from '@mui/icons-material/Star';
 import PlaybackRateSelect from './audio/PlaybackRateSelect';
@@ -124,7 +124,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
-  const [ttsVoice, setTtsVoice] = useState(availableVoices['Wavenet-H']);
+  const [ttsVoice, setTtsVoice] = useState(DEFAULT_VOICE);
   const [playbackRate, setPlaybackRate] = useState(2.6);
   const { accessToken } = useUser();
 
@@ -147,9 +147,10 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       fetch(getAudioProgressEndpoint(article))
         .then((res) => {
           return res.json();
-        }).then(({progressSecond}: TtsProgress) => {
+        }).then(({progressSecond, voice}: TtsProgress) => {
           audioRef.current.currentTime = progressSecond;
           setTrackProgress(progressSecond);
+          setTtsVoice(voice && invertAvailableVoices[voice] ? voice : DEFAULT_VOICE);
         });
     }
   }, [article]);

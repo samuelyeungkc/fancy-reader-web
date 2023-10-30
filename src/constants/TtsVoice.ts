@@ -1,4 +1,6 @@
-export const availableVoices = {
+import { invert } from 'lodash';
+
+export const availableVoices: Record<string, string> = {
   'Amy': 'Amy',
   'Joanna': 'Joanna',
   'Matthew': 'Matthew',
@@ -9,3 +11,6 @@ export const availableVoices = {
   'Wavenet-A': 'en-US-Wavenet-A',
   'Wavenet-F': 'en-US-Wavenet-F',
 };
+export const invertAvailableVoices = invert(availableVoices);
+
+export const DEFAULT_VOICE = 'en-US-Wavenet-H';
