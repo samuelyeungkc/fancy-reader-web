@@ -17,6 +17,7 @@ import VoiceSelect from './audio/VoiceSelect';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUser } from '../contexts/UserContext';
 
+const host = `https://apps.samykc.com`;
 const AudioControls = (
   {
     isLoading,
@@ -84,6 +85,11 @@ const getAudioSrcFromArticle = (article: Article, accessToken: string, voice: st
   const isArticle = article.is_article === '1';
   const key = 'slfjaslfjslfjdsklfjsdklfjafiowpepqzvcnlvlvriwuehkjnvnkjxcyviLKDFJVIDCDQNZpq';
   return `${endpt}?key=${key}&url=${url}&pocket_id=${article.item_id}&voice=${voice}&access_token=${accessToken}&is_article=${isArticle}`;
+};
+
+const getAudioProgressEndpoint = (article: Article | undefined) => {
+  const endpt = `${host}/articles/tts/progress`;
+  return `${endpt}?pocket_id=${article?.item_id}`;
 };
 
 const getAudioSrc = (article: Article | undefined, accessToken: string, ttsVoice: string) => {
