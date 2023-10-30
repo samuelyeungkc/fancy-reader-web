@@ -150,7 +150,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         }).then(({progressSecond, voice}: TtsProgress) => {
           audioRef.current.currentTime = progressSecond;
           setTrackProgress(progressSecond);
-          setTtsVoice(voice && invertAvailableVoices[voice] ? voice : DEFAULT_VOICE);
+          setTtsVoice(voice && invertAvailableVoices[voice] ? voice : ttsVoice);
         });
     }
   }, [article]);
