@@ -244,7 +244,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         audioRef.current.play();
         startTimer();
       }
-    } else {
+    } else if (refAudioUrl.current !== '') {
       clearInterval(intervalRef.current);
       audioRef.current.pause();
       syncProgress(true);
