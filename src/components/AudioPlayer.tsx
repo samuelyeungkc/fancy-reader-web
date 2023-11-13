@@ -268,6 +268,9 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     // Clear any timers already running
     clearInterval(intervalRef.current);
     updateAudioProgress(value);
+    if (!audioRef.current.paused) {
+      startTimer();
+    }
   }
 
   const updateAudioProgress = (newProgress: number) => {
