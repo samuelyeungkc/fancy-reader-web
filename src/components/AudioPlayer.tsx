@@ -239,9 +239,11 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
           audioRef.current.src = `data:audio/mp3;base64,${data}`;
           audioRef.current.playbackRate = playbackRate;
           audioRef.current.currentTime = currentProgress;
-          audioRef.current.play();
-          setTotalTime(audioRef.current.duration);
-          startTimer();
+          audioRef.current.play()
+            .then(() => {
+              setTotalTime(audioRef.current.duration);
+              startTimer();
+            });
         }).finally(() => {
           setNetworkLoading(false);
         });
