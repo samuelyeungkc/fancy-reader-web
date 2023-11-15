@@ -230,6 +230,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
     if (isPlaying) {
       setNetworkLoading(true);
       const newSrc = getAudioSrc(article, accessToken, ttsVoice);
+      // selected new article, load new remote audio
       if (newSrc !== refAudioUrl.current) {
         refAudioUrl.current = newSrc;
         const currentProgress = audioRef.current.currentTime;
@@ -248,6 +249,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
           setNetworkLoading(false);
         });
       } else {
+        // same audio no need to fetch again
         audioRef.current.play();
         startTimer();
       }
