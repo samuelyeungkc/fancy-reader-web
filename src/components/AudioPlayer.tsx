@@ -21,6 +21,7 @@ type TtsProgress = {
   id?: number;
   pocketId: string;
   progressSecond: number;
+  totalTime: number;
   completed: number;
   timeUpdated: number;
   voice?: string;
@@ -126,6 +127,8 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
   const [artist, setArtist] = useState('');
   const [ttsVoice, setTtsVoice] = useState(DEFAULT_VOICE);
   const [playbackRate, setPlaybackRate] = useState(2.6);
+  // timer is updated in 1. audio loaded 2. progress loaded
+  const [totalTime, setTotalTime] = useState(0);
   const { accessToken } = useUser();
 
   const audioRef = useRef(new Audio(''));
@@ -147,8 +150,9 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       fetch(getAudioProgressEndpoint(article))
         .then((res) => {
           return res.json();
-        }).then(({progressSecond, voice}: TtsProgress) => {
+        }).then(({progressSecond, voice, totalTime}: TtsProgress) => {
           audioRef.current.currentTime = progressSecond;
+          setTotalTime(totalTime);
           setTrackProgress(progressSecond);
           setTtsVoice(voice && invertAvailableVoices[voice] ? voice : ttsVoice);
         });
@@ -236,6 +240,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
           audioRef.current.playbackRate = playbackRate;
           audioRef.current.currentTime = currentProgress;
           audioRef.current.play();
+          setTotalTime(audioRef.current.duration);
           startTimer();
         }).finally(() => {
           setNetworkLoading(false);
@@ -297,7 +302,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       </Typography>
       <Slider
         value={trackProgress}
-        max={isNaN(duration) ? 0 : duration}
+        max={totalTime}
         onChange={(e, value) => {
           onScrub(value as number);
         }}
@@ -305,7 +310,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
       />
       <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
         {getProgressBarMarker(trackProgress)}
-        {getProgressBarMarker(duration)}
+        {getProgressBarMarker(totalTime)}
       </Stack>
       <AudioControls
         isLoading={networkLoading}
