@@ -173,7 +173,7 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
         body: JSON.stringify({
           pocketId: article?.item_id,
           progressSecond: currentTime,
-          duration: duration,
+          total_time: duration,
           completed: duration - currentTime < COMPLETE_THRESHOLD ? 1 : 0,
           timeUpdated: Date.now(),
           voice: ttsVoice,
