@@ -60,7 +60,10 @@ const Main = () => {
     fetch(`https://apps.samykc.com/pocket/tag/list?access_token=${accessToken}`, config)
       .then(res => res.json())
       .then((res: FetchTagResponse) => {
-        setAllTags([...Object.values(tags), ...res.tags]);
+        setAllTags([
+          ...Object.values(tags),
+          ...(res.tags.toSorted((a, b) => a.localeCompare(b)))
+        ]);
         console.log('tagList', res);
       })
       .catch(err => console.error('fetch tag error!', err));
