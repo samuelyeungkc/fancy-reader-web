@@ -10,7 +10,7 @@ export type Article = {
   time_read: string;
   sort_id: number;
   resolved_title: string;
-  resolved_url: string;
+  resolved_url?: string;
   is_article: string; // 1/0
   word_count: string; // "1010"
   time_to_read: number;

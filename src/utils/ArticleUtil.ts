@@ -5,6 +5,7 @@ export const getDomain = (article: Article) => {
 };
 
 const getBaseDomain = (article: Article) => {
-  const fullDomain = article?.resolved_url.split('/')[2];
+  const url = article?.resolved_url ?? article?.given_url;
+  const fullDomain = url.split('/')[2];
   return fullDomain?.replaceAll('www.', '').replaceAll('.com', '');
 };
