@@ -16,6 +16,7 @@ import PlaybackRateSelect from './audio/PlaybackRateSelect';
 import VoiceSelect from './audio/VoiceSelect';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUser } from '../contexts/UserContext';
+import { getArtist } from '../utils/ArticleUtil';
 
 type TtsProgress = {
   id?: number;
@@ -94,7 +95,7 @@ const AudioControls = (
 const getAudioSrcFromArticle = (article: Article, accessToken: string, voice: string) => {
   const host = `https://apps.samykc.com`;
   const endpt = `${host}/pocket/articles/article/tts`;
-  const url = article.resolved_url;
+  const url = article.resolved_url ?? article.given_url;
   const isArticle = article.is_article === '1';
   const key = 'slfjaslfjslfjdsklfjsdklfjafiowpepqzvcnlvlvriwuehkjnvnkjxcyviLKDFJVIDCDQNZpq';
   return `${endpt}?key=${key}&url=${url}&pocket_id=${article.item_id}&voice=${voice}&access_token=${accessToken}&is_article=${isArticle}`;
@@ -222,8 +223,8 @@ const AudioPlayer = ({ article }: { article: Article | undefined; }) => {
 
   useEffect(() => {
     updateAudioProgress(0);
-    setTitle(article?.resolved_title || article?.given_title || '');
-    setArtist(article?.domain_metadata?.name || article?.resolved_url.split('/')[2] || '');
+    setTitle(article?.resolved_title || article?.given_title || 'Title not found');
+    setArtist(getArtist(article));
   }, [article]);
 
   useEffect(() => {
