@@ -107,7 +107,7 @@ const Main = () => {
       <TagSelectionModalSheet
         dialogOpened={dialogOpened}
         setDialogOpened={setDialogOpened}
-        allTags={['long', '_untagged_', 'medium', 'audio']}
+        allTags={['long', '_untagged_', '_medium', '_audio']}
         setSelectedTag={setSelectedTag}
       />
 
